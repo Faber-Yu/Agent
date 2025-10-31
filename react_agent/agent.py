@@ -103,7 +103,7 @@ class ReActAgent:
         if any(op in task.lower() for op in ['calculate', 'compute', '+', '-', '*', '/', 'sum', 'multiply']):
             # Extract the mathematical expression
             # Simple heuristic: look for numbers and operators
-            expression_match = re.search(r'[\d\s\+\-\*\/\(\)\.]+', task)
+            expression_match = re.search(r'[\d\s+\-*/().]+', task)
             if expression_match:
                 expression = expression_match.group(0).strip()
                 return Action(tool_name="calculator", arguments={"expression": expression})

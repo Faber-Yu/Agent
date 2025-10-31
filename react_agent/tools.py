@@ -77,10 +77,18 @@ class CalculatorTool(Tool):
         """Execute a mathematical expression."""
         try:
             # Simple safety check - only allow numbers and basic operators
-            if not re.match(r'^[\d\s\+\-\*\/\(\)\.]+$', expression):
+            if not re.match(r'^[\d\s+\-*/().]+$', expression):
                 return "Error: Invalid expression. Only numbers and +, -, *, /, (), . are allowed."
             
-            result = eval(expression)
+            # Additional safety: check for dangerous patterns
+            dangerous_patterns = ['__', 'import', 'eval', 'exec', 'open', 'file']
+            if any(pattern in expression.lower() for pattern in dangerous_patterns):
+                return "Error: Expression contains forbidden patterns."
+            
+            # Use eval with restricted namespace for safety
+            # Only allow mathematical operations
+            allowed_names = {"__builtins__": {}}
+            result = eval(expression, allowed_names)
             return result
         except Exception as e:
             return f"Error calculating: {str(e)}"
